@@ -1,4 +1,5 @@
 import "./globals.css";
+import { preload } from "react-dom";
 import ClientLayout from "@/components/ClientLayout";
 
 export const metadata = {
@@ -16,6 +17,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Body font: fetch it with the HTML instead of after CSS parsing, so it is usually ready before
+  // first paint and text doesn't reflow (the late swap caused ~0.1 CLS on /work on mobile)
+  preload("/fonts/RedditSans.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+
   return (
     <html lang="en">
       <body>

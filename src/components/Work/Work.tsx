@@ -7,21 +7,151 @@ import { useRouter } from "next/navigation"
 import TransitionLink from "@/components/Transition/TransitionLink"
 import { performTransitionAndNavigate } from "@/utils/transition"
 import { Search, ExternalLink, Github, X } from "lucide-react"
-import { SmoothCursor } from "@/components/ui/Cursor/smooth-cursor"
 import Contact from "@/components/Contact/Contact"
+import LazyVideo from "@/components/ui/LazyVideo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { isValidUrl, isExternalUrl } from "@/utils/urlValidation"
-import { projects, categories, technologies } from "@/data/projects"
-import { isTouchDevice, isIPad } from "@/utils/touchDevice"
-import { 
-  IMAGE_BATCH_SIZE_IPAD, 
-  IMAGE_QUALITY_FEATURED, 
-  BATCH_DELAY,
+import { projects, categories, technologies, type Project } from "@/data/projects"
+import { isTouchDevice } from "@/utils/touchDevice"
+import {
   RESIZE_DEBOUNCE_DELAY,
   OBSERVER_THRESHOLD,
   OBSERVER_ROOT_MARGIN
 } from "@/constants"
+
+type ProjectCardBodyProps = {
+  project: Project
+  priority: boolean
+  isLoaded: boolean
+  isCentered: boolean
+  onImageSettled: () => void
+  onOpenLive: () => void
+}
+
+// Shared inside of a project card; the caller decides whether it is wrapped in an external <Link> or a TransitionLink
+function ProjectCardBody({ project, priority, isLoaded, isCentered, onImageSettled, onOpenLive }: ProjectCardBodyProps) {
+  const openGithub = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (isValidUrl(project.githubUrl)) {
+      window.open(project.githubUrl, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  const openLive = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onOpenLive()
+  }
+
+  // Fixed 16:9 box for every card (the videos are 1920x1080 too) so lazy videos don't shift the list when they load
+  return (
+    <div className="aspect-[16/9] relative">
+      {project.type === "video" && project.video ? (
+        <LazyVideo
+          src={project.video}
+          poster={project.image}
+          aria-label={`Video preview for ${project.title}`}
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+        />
+      ) : (
+        <div className="relative w-full h-full">
+          {/* Loading skeleton */}
+          {!isLoaded && (
+            <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+              <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+            </div>
+          )}
+          <Image
+            src={project.image}
+            alt={project.title}
+            fill
+            priority={priority}
+            sizes="(max-width: 768px) 100vw, 672px"
+            // The above-the-fold (priority) image must not wait for hydration + onLoad to become visible, or LCP waits on JS
+            className={`object-cover transition-all duration-1000 group-hover:scale-105 ${
+              isLoaded || priority ? "opacity-100" : "opacity-0"
+            }`}
+            onLoad={onImageSettled}
+            onError={onImageSettled}
+          />
+        </div>
+      )}
+
+      {/* Featured Badge */}
+      {project.featured && (
+        <div className="absolute top-4 left-4 z-10">
+          <div className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-semibold">
+            ★ Featured
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Hover Overlay */}
+      <div
+        className="hidden md:flex absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
+      >
+        <div className="flex gap-3">
+          <div
+            onClick={openLive}
+            className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
+            role="button"
+            aria-label={`Open ${project.title}`}
+          >
+            <ExternalLink className="w-5 h-5 text-gray-700" aria-hidden="true" />
+          </div>
+          <div
+            onClick={openGithub}
+            className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
+            role="button"
+            aria-label={`${project.title} source code`}
+          >
+            <Github className="w-5 h-5 text-gray-700" aria-hidden="true" />
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Auto-Reveal Overlay */}
+      <div
+        className={`md:hidden absolute bottom-0 right-0 left-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent transition-all duration-700 ${
+          isCentered
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+      >
+        <div className="p-4 text-right text-white relative">
+          <h3 className="text-xl font-light mb-2 leading-tight">{project.title}</h3>
+          <p className="text-sm text-gray-200 leading-relaxed">
+            {project.description.length > 60
+              ? `${project.description.substring(0, 60)}...`
+              : project.description}
+          </p>
+          {/* Action buttons - absolute positioned left bottom */}
+          <div className="absolute bottom-4 left-4 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+            <div
+              onClick={openLive}
+              className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
+              role="button"
+              aria-label={`Open ${project.title}`}
+              tabIndex={0}
+            >
+              <ExternalLink className="w-4 h-4 text-white" aria-hidden="true" />
+            </div>
+            <div
+              onClick={openGithub}
+              className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
+              role="button"
+              aria-label={`${project.title} source code`}
+            >
+              <Github className="w-4 h-4 text-white" aria-hidden="true" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function Work() {
   const router = useRouter()
@@ -32,63 +162,6 @@ export default function Work() {
   const [centeredProjectId, setCenteredProjectId] = useState<number | null>(null)
   const [imagesLoaded, setImagesLoaded] = useState<Set<number>>(new Set())
   const observerRef = useRef<IntersectionObserver | null>(null)
-
-  // Preload images on component mount (with iPad optimization)
-  useEffect(() => {
-    const touchDevice = isTouchDevice();
-    const iPad = isIPad();
-    
-    // For iPad, only preload featured images to prevent memory issues
-    // Filter out already loaded images to avoid redundant loading
-    const imagesToPreload = (iPad || (touchDevice && window.innerWidth < 1024)
-      ? projects.filter(p => p.featured && !imagesLoaded.has(p.id) && p.image)
-      : projects.filter(p => !imagesLoaded.has(p.id) && p.image));
-    
-    if (imagesToPreload.length === 0) return;
-    
-    let isMounted = true;
-    
-    const preloadImages = async () => {
-      // Load images in batches for iPad to prevent memory issues
-      const batchSize = iPad ? IMAGE_BATCH_SIZE_IPAD : imagesToPreload.length;
-      
-      for (let i = 0; i < imagesToPreload.length; i += batchSize) {
-        if (!isMounted) break;
-        
-        const batch = imagesToPreload.slice(i, i + batchSize);
-        const imagePromises = batch.map((project) => {
-          return new Promise<boolean>((resolve) => {
-            if (project.image && !imagesLoaded.has(project.id)) {
-              const img = new window.Image()
-              img.onload = () => {
-                if (isMounted) {
-                  setImagesLoaded(prev => new Set(prev).add(project.id))
-                }
-                resolve(true)
-              }
-              img.onerror = () => resolve(false)
-              img.src = project.image
-            } else {
-              resolve(true)
-            }
-          })
-        })
-        
-        await Promise.all(imagePromises)
-        
-        // Small delay between batches for iPad
-        if (iPad && i + batchSize < imagesToPreload.length) {
-          await new Promise(resolve => setTimeout(resolve, BATCH_DELAY))
-        }
-      }
-    }
-
-    preloadImages()
-    
-    return () => {
-      isMounted = false;
-    };
-  }, []) // imagesLoaded intentionally excluded to prevent re-running
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
@@ -129,8 +202,9 @@ export default function Work() {
           const projectId = Number.parseInt(entry.target.getAttribute("data-project-id") || "0")
 
           if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-            setCenteredProjectId((prev) => prev !== projectId ? projectId : prev)
-          } else if (centeredProjectId === projectId && !entry.isIntersecting) {
+            setCenteredProjectId(projectId)
+          } else if (!entry.isIntersecting) {
+            // Functional update: reading centeredProjectId here would see the stale value from the first render
             setCenteredProjectId((prev) => prev === projectId ? null : prev)
           }
         })
@@ -153,7 +227,7 @@ export default function Work() {
         })
       })
     }
-    
+
     setupObserver()
 
     return () => {
@@ -162,19 +236,19 @@ export default function Work() {
         observerRef.current.disconnect()
       }
     }
-  }, [filteredProjects]) // Removed centeredProjectId from dependencies to prevent infinite loops
+  }, [filteredProjects])
 
   // Handle window resize with debouncing
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
-    
+
     const handleResize = () => {
       clearTimeout(timeoutId)
       timeoutId = setTimeout(() => {
         const isTouch = isTouchDevice()
         const isSmallScreen = window.innerWidth < 1024
         const shouldUseObserver = isTouch || isSmallScreen
-        
+
         if (!shouldUseObserver) {
           setCenteredProjectId(null)
           if (observerRef.current) {
@@ -217,15 +291,18 @@ export default function Work() {
     setSearchTerm("")
   }
 
+  const markImageSettled = (id: number) => {
+    setImagesLoaded(prev => new Set(prev).add(id))
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <SmoothCursor /> 
       {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="text-center mt-[20vh] mb-12">
             <h1 className="text-5xl md:text-6xl font-light text-gray-900 mb-4 tracking-tight">Projects</h1>
-             
+
           </div>
 
           {/* Search Bar */}
@@ -234,6 +311,7 @@ export default function Work() {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
                 placeholder="Search projects..."
+                aria-label="Search projects"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-12 h-12 border-0 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-gray-900 transition-all duration-200 text-base"
@@ -312,10 +390,28 @@ export default function Work() {
       <div className="max-w-7xl mx-auto px-6 py-16 mb-20">
         {filteredProjects.length > 0 ? (
           <div className="space-y-20">
-            {filteredProjects.map((project) => {
+            {filteredProjects.map((project, index) => {
               const isExternal = isExternalUrl(project.liveUrl || '');
               const urlIsValid = isValidUrl(project.liveUrl || '');
-              
+
+              const body = (
+                <ProjectCardBody
+                  project={project}
+                  // Only the first card is above the fold; preloading every featured image competed with it for bandwidth
+                  priority={index === 0}
+                  isLoaded={imagesLoaded.has(project.id)}
+                  isCentered={centeredProjectId === project.id}
+                  onImageSettled={() => markImageSettled(project.id)}
+                  onOpenLive={() => {
+                    if (isExternal && urlIsValid) {
+                      window.open(project.liveUrl, '_blank', 'noopener,noreferrer')
+                    } else if (urlIsValid) {
+                      performTransitionAndNavigate(router, project.liveUrl)
+                    }
+                  }}
+                />
+              );
+
               return (
               <div key={project.id} className="group flex items-end gap-8 md:gap-8">
                 {/* Project Image Card */}
@@ -327,171 +423,7 @@ export default function Work() {
                     className="flex-1 max-w-2xl relative overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-2xl backdrop-blur-sm border border-gray-100/50 transition-all duration-700 cursor-pointer"
                     data-project-id={project.id}
                   >
-                    <div className={project.type === "video" ? "relative" : "aspect-[16/9] relative"}>
-                      {project.type === "video" && project.video ? (
-                        <video
-                          src={project.video}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          preload="metadata"
-                          aria-label={`Video preview for ${project.title}`}
-                          className="w-full h-auto transition-transform duration-1000 group-hover:scale-105"
-                          style={{ 
-                            willChange: "auto",
-                            transform: "translateZ(0)" // Hardware acceleration for iPad
-                          }}
-                        />
-                      ) : (
-                        <div className="relative w-full h-full">
-                          {/* Loading skeleton */}
-                          {!imagesLoaded.has(project.id) && (
-                            <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                              <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-                            </div>
-                          )}
-                          <Image
-                            src={project.image || "/placeholder.svg"}
-                            alt={project.title}
-                            fill
-                            priority={project.featured} // Priority loading for featured projects
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            quality={IMAGE_QUALITY_FEATURED}
-                            className={`object-cover transition-all duration-1000 group-hover:scale-105 ${
-                              imagesLoaded.has(project.id) 
-                                ? "opacity-100" 
-                                : "opacity-0"
-                            }`}
-                            style={{ 
-                              willChange: "auto",
-                              transform: "translateZ(0)" // Hardware acceleration for iPad
-                            }}
-                            onLoad={() => {
-                              setImagesLoaded(prev => new Set(prev).add(project.id))
-                            }}
-                            onError={() => {
-                              setImagesLoaded(prev => new Set(prev).add(project.id))
-                            }}
-                          />
-                        </div>
-                      )}
-
-                      {/* Featured Badge */}
-                      {project.featured && (
-                        <div className="absolute top-4 left-4 z-10">
-                          <div className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-semibold">
-                            ★ Featured
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Desktop Hover Overlay */}
-                      <div 
-                        className="hidden md:flex absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
-                      >
-                        <div className="flex gap-3">
-                          <div
-                            onClick={async (e) => {
-                              e.preventDefault()
-                              e.stopPropagation()
-                              if (isExternal && urlIsValid) {
-                                window.open(project.liveUrl, '_blank', 'noopener,noreferrer')
-                              } else if (urlIsValid) {
-                                await performTransitionAndNavigate(router, project.liveUrl)
-                              }
-                            }}
-                            className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
-                          >
-                            <ExternalLink className="w-5 h-5 text-gray-700" />
-                          </div>
-                          <div
-                            onClick={(e) => {
-                              e.preventDefault()
-                              e.stopPropagation()
-                              if (isValidUrl(project.githubUrl)) {
-                                window.open(project.githubUrl, '_blank', 'noopener,noreferrer')
-                              }
-                            }}
-                            className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
-                          >
-                            <Github className="w-5 h-5 text-gray-700" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Mobile Auto-Reveal Overlay */}
-                      <div
-                        className={`md:hidden absolute bottom-0 right-0 left-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent transition-all duration-700 ${
-                          centeredProjectId === project.id
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-4 pointer-events-none"
-                        }`}
-                      >
-                        <div className="p-4 text-right text-white relative">
-                          <h3 className="text-xl font-light mb-2 leading-tight">{project.title}</h3>
-                          <p className="text-sm text-gray-200 leading-relaxed">
-                            {project.description.length > 60 
-                              ? `${project.description.substring(0, 60)}...` 
-                              : project.description}
-                          </p>
-                          {/* Action buttons - absolute positioned left bottom */}
-                          <div className="absolute bottom-4 left-4 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                            <div
-                              onClick={async (e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                if (isExternal && urlIsValid) {
-                                  window.open(project.liveUrl, '_blank', 'noopener,noreferrer')
-                                } else if (urlIsValid) {
-                                  await performTransitionAndNavigate(router, project.liveUrl)
-                                }
-                              }}
-                              className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
-                              role="button"
-                              aria-label={`Open ${project.title} in new tab`}
-                              tabIndex={0}
-                            >
-                              <ExternalLink className="w-4 h-4 text-white" aria-hidden="true" />
-                            </div>
-                            <div
-                              onClick={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                if (isValidUrl(project.githubUrl)) {
-                                window.open(project.githubUrl, '_blank', 'noopener,noreferrer')
-                              }
-                              }}
-                              className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
-                            >
-                              <Github className="w-4 h-4 text-white" />
-                            </div>
-                          </div>
-                          
-                          {/* Hidden technologies */}
-                          <div className="hidden flex-wrap justify-end gap-1 mb-2">
-                            {project.technologies.slice(0, 3).map((tech) => (
-                              <span
-                                key={tech}
-                                className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded backdrop-blur-sm"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                          {/* Hidden metadata */}
-                          <div className="hidden text-right">
-                            <p className="text-xs text-gray-300">
-                              {new Date(project.date).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "short",
-                              })}
-                            </p>
-                            <p className="text-xs text-gray-400">{project.category}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    {body}
                   </Link>
                 ) : (
                   <TransitionLink
@@ -499,171 +431,7 @@ export default function Work() {
                     className="flex-1 max-w-2xl relative overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-2xl backdrop-blur-sm border border-gray-100/50 transition-all duration-500 cursor-pointer block"
                     data-project-id={project.id}
                   >
-                    <div className={project.type === "video" ? "relative" : "aspect-[16/9] relative"}>
-                      {project.type === "video" && project.video ? (
-                        <video
-                          src={project.video}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          preload="metadata"
-                          aria-label={`Video preview for ${project.title}`}
-                          className="w-full h-auto transition-transform duration-1000 group-hover:scale-105"
-                          style={{ 
-                            willChange: "auto",
-                            transform: "translateZ(0)" // Hardware acceleration for iPad
-                          }}
-                        />
-                      ) : (
-                        <div className="relative w-full h-full">
-                          {/* Loading skeleton */}
-                          {!imagesLoaded.has(project.id) && (
-                            <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                              <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-                            </div>
-                          )}
-                          <Image
-                            src={project.image || "/placeholder.svg"}
-                            alt={project.title}
-                            fill
-                            priority={project.featured} // Priority loading for featured projects
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            quality={IMAGE_QUALITY_FEATURED}
-                            className={`object-cover transition-all duration-1000 group-hover:scale-105 ${
-                              imagesLoaded.has(project.id) 
-                                ? "opacity-100" 
-                                : "opacity-0"
-                            }`}
-                            style={{ 
-                              willChange: "auto",
-                              transform: "translateZ(0)" // Hardware acceleration for iPad
-                            }}
-                            onLoad={() => {
-                              setImagesLoaded(prev => new Set(prev).add(project.id))
-                            }}
-                            onError={() => {
-                              setImagesLoaded(prev => new Set(prev).add(project.id))
-                            }}
-                          />
-                        </div>
-                      )}
-
-                      {/* Featured Badge */}
-                      {project.featured && (
-                        <div className="absolute top-4 left-4 z-10">
-                          <div className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-semibold">
-                            ★ Featured
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Desktop Hover Overlay */}
-                      <div 
-                        className="hidden md:flex absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
-                      >
-                        <div className="flex gap-3">
-                          <div
-                            onClick={async (e) => {
-                              e.preventDefault()
-                              e.stopPropagation()
-                              if (isExternal && urlIsValid) {
-                                window.open(project.liveUrl, '_blank', 'noopener,noreferrer')
-                              } else if (urlIsValid) {
-                                await performTransitionAndNavigate(router, project.liveUrl)
-                              }
-                            }}
-                            className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
-                          >
-                            <ExternalLink className="w-5 h-5 text-gray-700" />
-                          </div>
-                          <div
-                            onClick={(e) => {
-                              e.preventDefault()
-                              e.stopPropagation()
-                              if (isValidUrl(project.githubUrl)) {
-                                window.open(project.githubUrl, '_blank', 'noopener,noreferrer')
-                              }
-                            }}
-                            className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
-                          >
-                            <Github className="w-5 h-5 text-gray-700" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Mobile Auto-Reveal Overlay */}
-                      <div
-                        className={`md:hidden absolute bottom-0 right-0 left-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent transition-all duration-700 ${
-                          centeredProjectId === project.id
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-4 pointer-events-none"
-                        }`}
-                      >
-                        <div className="p-4 text-right text-white relative">
-                          <h3 className="text-xl font-light mb-2 leading-tight">{project.title}</h3>
-                          <p className="text-sm text-gray-200 leading-relaxed">
-                            {project.description.length > 60 
-                              ? `${project.description.substring(0, 60)}...` 
-                              : project.description}
-                          </p>
-                          {/* Action buttons - absolute positioned left bottom */}
-                          <div className="absolute bottom-4 left-4 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                            <div
-                              onClick={async (e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                if (isExternal && urlIsValid) {
-                                  window.open(project.liveUrl, '_blank', 'noopener,noreferrer')
-                                } else if (urlIsValid) {
-                                  await performTransitionAndNavigate(router, project.liveUrl)
-                                }
-                              }}
-                              className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
-                              role="button"
-                              aria-label={`Open ${project.title} in new tab`}
-                              tabIndex={0}
-                            >
-                              <ExternalLink className="w-4 h-4 text-white" aria-hidden="true" />
-                            </div>
-                            <div
-                              onClick={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                if (isValidUrl(project.githubUrl)) {
-                                window.open(project.githubUrl, '_blank', 'noopener,noreferrer')
-                              }
-                              }}
-                              className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
-                            >
-                              <Github className="w-4 h-4 text-white" />
-                            </div>
-                          </div>
-                          
-                          {/* Hidden technologies */}
-                          <div className="hidden flex-wrap justify-end gap-1 mb-2">
-                            {project.technologies.slice(0, 3).map((tech) => (
-                              <span
-                                key={tech}
-                                className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded backdrop-blur-sm"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                          {/* Hidden metadata */}
-                          <div className="hidden text-right">
-                            <p className="text-xs text-gray-300">
-                              {new Date(project.date).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "short",
-                              })}
-                            </p>
-                            <p className="text-xs text-gray-400">{project.category}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    {body}
                   </TransitionLink>
                 )}
 
@@ -712,8 +480,8 @@ export default function Work() {
       </div>
 
       {/* Footer */}
-      <Contact 
-      backgroundColor="rgba(255,255,255,1)" 
+      <Contact
+      backgroundColor="rgba(255,255,255,1)"
       textColor="rgba(0,0,0,0.9)"
       theme="light"
     />

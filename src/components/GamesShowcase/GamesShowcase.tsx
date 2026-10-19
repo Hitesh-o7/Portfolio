@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import TransitionLink from "@/components/Transition/TransitionLink";
 import { Search, X, Eye, ExternalLink, Github } from "lucide-react";
-import { SmoothCursor } from "@/components/ui/Cursor/smooth-cursor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StarBorder } from "@/components/ui/star-border";
@@ -93,7 +92,6 @@ export default function GamesShowcase() {
   return (
     <>
       <div className="min-h-screen bg-white">
-        <SmoothCursor />
         <div className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-6 py-12">
             <div className="text-center mt-[20vh] mb-12">

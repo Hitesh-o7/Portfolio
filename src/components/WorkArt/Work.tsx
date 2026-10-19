@@ -86,7 +86,9 @@ export default function Work() {
                                         alt={work.alt}
                                         className={styles.work_img}
                                         fill
-                                        style={{ 
+                                        // two-column grid above 750px (see style.module.css); without this the browser fetches 100vw images
+                                        sizes="(max-width: 750px) 100vw, 50vw"
+                                        style={{
                                             objectFit: "cover",
                                             willChange: "auto",
                                             transform: "translateZ(0)", // Hardware acceleration for iPad

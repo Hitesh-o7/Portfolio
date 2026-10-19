@@ -13,10 +13,11 @@
     font-style: normal;
     font-display: swap;
 } 
-@font-face { 
+@font-face {
     font-family: 'reddit';
-    src: url('/fonts/RedditSans.ttf') format('truetype');
-    font-weight: normal;  
+    /* Variable font (wght 200-900), Latin subset as WOFF2: 53KB instead of the 257KB TTF */
+    src: url('/fonts/RedditSans.woff2') format('woff2');
+    font-weight: 200 900;
     font-style: normal;
     font-display: swap;
     -moz-font-feature-settings: "liga" 1;
@@ -61,6 +62,13 @@ html{
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
     -moz-overflow-scrolling: touch;
+}
+/* Lenis does its own smoothing; native smooth scrolling on top of it makes scrollTo/anchors stutter */
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+    overflow: hidden;
 }
 body {
   color: #FFF7E9;

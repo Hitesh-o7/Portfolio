@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Search, Grid, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SmoothCursor } from "@/components/ui/Cursor/smooth-cursor";
 import Contact from "@/components/Contact/Contact";
 import { artworkImages, getArtworkCategories, ArtworkImage } from "@/utils/imageLoader";
 
@@ -155,7 +154,6 @@ export default function ArtShowcase() {
   return (
     <>
     <div className="min-h-screen bg-white">
-      <SmoothCursor /> 
           {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-12">

@@ -50,7 +50,7 @@ export default function Contact({
                             <Image src="/linkedin.svg" alt="LinkedIn" width={24} height={24} className={`w-6 h-6 ${styles.socialIcon}`} />
                         </a>
                         <a href="https://www.artstation.com/hiteshthakur2" target="_blank" rel="noopener noreferrer">
-                            <Image src="/artstation.svg" alt="Instagram" width={24} height={24} className={`w-6 h-6 ${styles.socialIcon}`} />
+                            <Image src="/artstation.svg" alt="ArtStation" width={24} height={24} className={`w-6 h-6 ${styles.socialIcon}`} />
                         </a>
                         <a href="https://github.com/Hitesh-o7" target="_blank" rel="noopener noreferrer" className="scale-[1.4] transition-all duration-300">
                             <Image src="/github.svg" alt="GitHub" width={24} height={24} className={`w-6 h-6 ${styles.socialIcon}`} />

@@ -67,17 +67,15 @@ export default function PerfumeProjectPage() {
                   <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
                 </div>
               )}
+              {/* Hero image paints over the skeleton as soon as it decodes; gating it on onLoad (opacity-0) made LCP wait for hydration */}
               <Image
                 src="/Work/Perfume%20Store%20Atlanta.avif"
                 alt="Perfume Store commerce website"
                 width={1920}
-                height={1080}
-                className={`w-full h-auto object-contain rounded-xl transition-opacity duration-300 ${
-                  imageLoaded ? "opacity-100" : "opacity-0"
-                }`}
+                height={6854}
+                className="relative w-full h-auto object-contain rounded-xl"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 80vw"
                 priority={true}
-                quality={75}
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageLoaded(true)}
               />

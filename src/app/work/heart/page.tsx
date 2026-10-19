@@ -61,28 +61,18 @@ export default function HeartProjectPage() {
                   <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
                 </div>
               )}
+              {/* Hero image paints over the skeleton as soon as it decodes; gating it on onLoad (opacity-0) made LCP wait for hydration */}
               {!imageError ? (
-                <Image 
+                <Image
                   src="/projects/Testing.avif" 
                   alt="Heart Project" 
-                  width={2000}
-                  height={4000}
-                  className={`w-full h-auto object-contain rounded-xl transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  width={2560}
+                  height={9200}
+                  className="relative w-full h-auto object-contain rounded-xl"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 80vw"
                   priority={!isMobile}
                   loading={isMobile ? "lazy" : "eager"}
-                  quality={90}
-                  onLoad={() => {
-                    setImageLoaded(true);
-                    // Force garbage collection hint for mobile devices
-                    if (isMobile && 'gc' in window) {
-                      try {
-                        // @ts-expect-error - gc() is a non-standard API for garbage collection
-                        window.gc();
-                      } catch { 
-                      }
-                    }
-                  }}
+                  onLoad={() => setImageLoaded(true)}
                   onError={() => setImageError(true)}
                 />
               ) : (
