@@ -19,43 +19,6 @@
         padding:    15px;
     }
 }
-
-
-.header .logo {
-    display: flex;
-    cursor: pointer;
-}
-
-
-.header .logo .name p:nth-of-type(2) {
-    padding-left: 0.3em;
-}
-
-.header .logo .name p:nth-of-type(3) {
-    position: absolute;
-    left: 175px;
-    padding-left: 0.4em;
-}
-
-.header .logo:hover .copyright {
-    transform: rotate(360deg);
-}
-
-.header .logo:hover .name {
-    padding-right: 100px;
-}
-
-.header .logo:hover .name .codeBy {
-    transform: translateX(-100%);
-}
-
-.header .logo:hover .name .Hitesh {
-    transform: translateX(-105px);
-}
-
-.header .logo:hover .name .Thakur {
-    transform: translateX(-100px);
-}
 /* Align centers with the logo on desktop/tablet */
 .headerButtonContainer {
     transform: scale(1);
@@ -138,13 +101,6 @@
     background-color: rgb(255, 255, 255);
 }
 
-@media (max-width: 768px) {
-    .header .nav .el {
-        display: none;
-    }
-}
-
-
 .fixedLogo {
     position: fixed;
     top: 20px;
@@ -185,7 +141,6 @@
     }
 }
 
- 
 .darkBg .logoImage,
 .invertLogo {
     filter: invert(1) brightness(1.2) contrast(1.1);

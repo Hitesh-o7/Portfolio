@@ -24,10 +24,10 @@ export default async function GameDetailPage({ params }: PageProps) {
       <section className="max-w-full      mx-auto px-[15%] py-20   ">
         <div className="flex flex-col gap-4 h-full">
           <div className="flex flex-col gap-4 h-full justify-center items-center mb-10">
-            <Image src="/Games/TopCrimson.png" alt="Stunt" width={1000} height={1000} />
+            <Image src="/Games/TopCrimson.avif" alt={`${project.name} key art`} width={2560} height={975} sizes="(max-width: 768px) 100vw, 70vw" priority />
           </div>
           <div className="flex justify-center items-center gap-6 mb-20">
-            {project.playUrl && project.playUrl !== "#" && (
+            {project.playUrl && (
               <StarBorder
                 as="a"
                 href={project.playUrl}
@@ -54,7 +54,7 @@ export default async function GameDetailPage({ params }: PageProps) {
           </div>
           <div className="  flex flex-row gap-4  ">
             <div className="flex w-3/4  flex-col gap-4 ">
-            <Image src="/Games/CrimsonName.png" alt="Stunt" width={400} height={1000} />
+            <Image src="/Games/CrimsonName.png" alt={`${project.name} logo`} width={379} height={208} />
             <div id="story" className="flex flex-col gap-4 mb-10">
               <h1 className="text-3xl font-bold font-mono">Story</h1>
               <p className="text-lg">Once, two powerful clans ruled the land: the honorable Samurai Clan and the wise Sage Clan. At the beginning of your journey, you choose your path — Samurai or Sage — shaping your story. But peace was shattered by betrayal from within. The clans were wiped out, leaving only a single survivor — you. Now, driven by vengeance, you embark on a deadly mission to uncover the truth and destroy those responsible. Your oath is sealed in blood... Will you honor it? </p>
@@ -98,10 +98,10 @@ export default async function GameDetailPage({ params }: PageProps) {
 
  
             <div className="flex w-1/4 flex-col gap-4 ">
-            <Image src="/Games/MainPage.png" alt="Stunt" width={1000} height={1000} />
-            <Image src="/Games/Gameplay1.png" alt="Stunt" width={1000} height={1000} />
-            <Image src="/Games/Gameplay2.png" alt="Stunt" width={1000} height={1000} />  
-            <Image src="/Games/Gameplay3.png" alt="Stunt" width={1000} height={1000} />
+            <Image src="/Games/MainPage.avif" alt={`${project.name} title screen`} width={2028} height={1138} sizes="(max-width: 768px) 25vw, 20vw" />
+            <Image src="/Games/Gameplay1.avif" alt={`${project.name} gameplay screenshot 1`} width={2028} height={1138} sizes="(max-width: 768px) 25vw, 20vw" />
+            <Image src="/Games/Gameplay2.avif" alt={`${project.name} gameplay screenshot 2`} width={2028} height={1138} sizes="(max-width: 768px) 25vw, 20vw" />
+            <Image src="/Games/Gameplay3.avif" alt={`${project.name} gameplay screenshot 3`} width={2028} height={1138} sizes="(max-width: 768px) 25vw, 20vw" />
             </div>
 
             

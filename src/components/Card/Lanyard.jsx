@@ -13,11 +13,25 @@ const cardGLB = "/cardmain.glb"
 const lanyardTexturePath = "/lanyard.avif"
 
 export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], fov = 20, transparent = true }) {
+  const wrapperRef = useRef(null)
+  const [inView, setInView] = useState(true)
+
+  // Stop rendering + physics once the card is scrolled out of view; it otherwise burns a frame every 16ms forever
+  useEffect(() => {
+    const el = wrapperRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: "100px" })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <div className="lanyard-wrapper">
+    <div className="lanyard-wrapper" ref={wrapperRef}>
       <Canvas
         camera={{ position, fov }}
-        gl={{ alpha: transparent, antialias: true, preserveDrawingBuffer: true }}
+        dpr={[1, 2]}
+        frameloop={inView ? "always" : "never"}
+        gl={{ alpha: transparent, antialias: true }}
         onCreated={({ gl }) => {
           gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
           gl.outputColorSpace = THREE.SRGBColorSpace
@@ -26,7 +40,7 @@ export default function Lanyard({ position = [0, 0, 30], gravity = [0, -40, 0], 
         }}
       >
         <ambientLight intensity={Math.PI * 1.15} />
-        <Physics gravity={gravity} timeStep={1 / 60}>
+        <Physics gravity={gravity} timeStep={1 / 60} paused={!inView}>
           <Band />
         </Physics>
         <Environment blur={0.75}>
@@ -84,11 +98,14 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
   }
 
   const { nodes, materials } = useGLTF(cardGLB)
-  const texture = useTexture(lanyardTexturePath)
-  const [curve] = useState(
-    () =>
-      new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]),
-  )
+  const texture = useTexture(lanyardTexturePath, (tex) => {
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+  })
+  const [curve] = useState(() => {
+    const c = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()])
+    c.curveType = "chordal"
+    return c
+  })
   const [dragged, setDragged] = useState(false)
   const [hovered, setHovered] = useState(false)
 
@@ -166,9 +183,6 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
       card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z })
     }
   })
-
-  curve.curveType = "chordal"
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
 
   return (
     <>

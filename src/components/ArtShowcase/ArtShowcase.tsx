@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Search, Grid, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SmoothCursor } from "@/components/ui/Cursor/smooth-cursor";
 import Contact from "@/components/Contact/Contact";
 import { artworkImages, getArtworkCategories, ArtworkImage } from "@/utils/imageLoader";
 
@@ -155,7 +154,6 @@ export default function ArtShowcase() {
   return (
     <>
     <div className="min-h-screen bg-white">
-      <SmoothCursor /> 
           {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-12">
@@ -239,11 +237,11 @@ export default function ArtShowcase() {
               <Grid className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-xl font-light text-gray-900 mb-2">No artwork uploaded yet</h3>
-            <p className="text-gray-500 mb-6">Upload your 2D artwork to the public/2d-art folder and add them to the imageLoader.ts file.</p>
+            <p className="text-gray-500 mb-6">Upload your 2D artwork to the public/2dArt folder and add them to the imageLoader.ts file.</p>
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-2xl mx-auto text-left">
               <h4 className="font-medium text-yellow-800 mb-2">How to add artwork:</h4>
               <ol className="text-sm text-yellow-700 space-y-1">
-                <li>1. Upload your images to <code className="bg-yellow-100 px-1 rounded">public/2d-art/</code></li>
+                <li>1. Upload your images to <code className="bg-yellow-100 px-1 rounded">public/2dArt/</code></li>
                 <li>2. Add image details to <code className="bg-yellow-100 px-1 rounded">src/utils/imageLoader.ts</code></li>
                 <li>3. Your artwork will appear here automatically!</li>
               </ol>

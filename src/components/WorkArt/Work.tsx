@@ -10,32 +10,29 @@ export default function Work() {
     const router = useRouter();
     const { currentTextColor } = useAnimationContext();
     
+    // Two design-led and two engineering-led projects, so the home page speaks to both audiences
     const workItems = [
-        { 
-            src: "/Heart.avif", 
-            alt: "Heart Project", 
-            type: "image", 
-            name: "Heart Project",
+        {
+            src: "/Heart.avif",
+            alt: "Heartivity mental well-being website",
+            name: "Heartivity",
             url: "/work/heart"
         },
-        { 
-            src: "/Work/Sunsoft_Main.avif", 
-            alt: "SunSoft", 
-            type: "image", 
-            name: "SunSoft",
-            url: "/work/sunsoft"
+        {
+            src: "/projects/Boundary.avif",
+            alt: "Boundary Insights IPL analytics dashboard",
+            name: "Boundary Insights",
+            url: "https://github.com/Hitesh-o7/boundary"
         },
-        { 
-            src: "/Work/Soulscan.avif", 
-            alt: "SoulScan SaaS Platform", 
-            type: "image", 
+        {
+            src: "/Work/Soulscan.avif",
+            alt: "SoulScan SaaS platform",
             name: "SoulScan",
-            url: "/work/soulscan"  
+            url: "/work/soulscan"
         },
-        { 
-            src: "/Work/Perfume%20Store%20Atlanta.avif", 
-            alt: "Perfume Commerce Site", 
-            type: "image", 
+        {
+            src: "/Work/PerfumeStore.avif",
+            alt: "Perfume Store e-commerce site",
             name: "Perfume Store",
             url: "/work/perfume"
         },
@@ -45,54 +42,33 @@ export default function Work() {
         <main className={styles.Main}>
             <div className={styles.title}>WORK OF ART</div>
             <div className={styles.work_container}>
-                {workItems.map((work, index) => (
-                    <div 
-                        key={index} 
+                {workItems.map((work) => (
+                    <div
+                        key={work.url}
                         className={`${styles.card_wrapper} ${styles.clickable}`}
                         onClick={async () => {
-                            if (work.url && work.url !== "/error") {
-                                const isExternalUrl = work.url.startsWith('http://') || work.url.startsWith('https://');
-                                if (isExternalUrl) {
-                                    window.open(work.url, '_blank', 'noopener,noreferrer');
-                                } else {
-                                    await performTransitionAndNavigate(router, work.url);
-                                }
+                            if (work.url.startsWith("https://")) {
+                                window.open(work.url, '_blank', 'noopener,noreferrer');
+                            } else {
+                                await performTransitionAndNavigate(router, work.url);
                             }
                         }}
-                        style={{ cursor: work.url && work.url !== "/error" ? "pointer" : "default" }}
                     >
                         <div className={styles.card}>
                             <div className={styles.image_wrapper}>
-                                {work.type === "video" ? (
-                                    <video
-                                        src={work.src}
-                                        className={styles.work_img}
-                                        autoPlay
-                                        loop
-                                        muted
-                                        playsInline
-                                        preload="metadata"
-                                        style={{ 
-                                            width: "100%",
-                                            height: "100%",
-                                            display: "block",
-                                            willChange: "auto",
-                                            transform: "translateZ(0)", // Hardware acceleration for iPad
-                                        }}
-                                    />
-                                ) : (
-                                    <Image
-                                        src={work.src}
-                                        alt={work.alt}
-                                        className={styles.work_img}
-                                        fill
-                                        style={{ 
-                                            objectFit: "cover",
-                                            willChange: "auto",
-                                            transform: "translateZ(0)", // Hardware acceleration for iPad
-                                        }}
-                                    />
-                                )}
+                                <Image
+                                    src={work.src}
+                                    alt={work.alt}
+                                    className={styles.work_img}
+                                    fill
+                                    // two-column grid above 750px (see style.module.css); without this the browser fetches 100vw images
+                                    sizes="(max-width: 750px) 100vw, 50vw"
+                                    style={{
+                                        objectFit: "cover",
+                                        willChange: "auto",
+                                        transform: "translateZ(0)", // Hardware acceleration for iPad
+                                    }}
+                                />
                             </div>
                         </div>
                         <div className={styles.title1}>

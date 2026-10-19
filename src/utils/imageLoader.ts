@@ -45,7 +45,7 @@ export const artworkImages: ArtworkImage[] = [
     id: "my-artwork-4", 
     src: "/2dArt/Makima.avif",
     title: "Makima",
-    description: "Pencil sketch of Makima from Chainsaw Man, focusing on facial expression, posture, and accurate manga-style line work.",
+    description: "Manga-style line art of Makima from Chainsaw Man, focusing on facial expression, posture and clean ink work.",
     category: "Digital Painting",
     year: "2025",
     medium: "Digital"
@@ -71,7 +71,7 @@ export const artworkImages: ArtworkImage[] = [
   {
     id: "my-artwork-7", 
     src: "/2dArt/Cute.avif",
-    title: "Cutei",
+    title: "Cutie",
     description: "A soft-shaded character illustration exploring pastel tones, stylized anatomy, and a warm, inviting vibe.",
     category: "Digital Painting",
     year: "2025",
@@ -105,14 +105,6 @@ export const artworkImages: ArtworkImage[] = [
     medium: "Digital"
   }, 
 ];
-
-export const getArtworkImages = (): ArtworkImage[] => {
-  return artworkImages;
-};
-
-export const getArtworkByCategory = (category: string): ArtworkImage[] => {
-  return artworkImages.filter(img => img.category === category);
-};
 
 export const getArtworkCategories = (): string[] => {
   const categories = artworkImages.map(img => img.category).filter(Boolean) as string[];

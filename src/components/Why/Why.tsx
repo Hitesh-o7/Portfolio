@@ -57,7 +57,7 @@ const SketchyStrikethrough: React.FC<{ isVisible: boolean; textWidth: number }> 
       {/* The filled path that gets revealed along the curve */}
       <motion.path
         d={customPath}
-        fill="gray"  // Changed from "red" to "gray"
+        fill="gray"
         mask="url(#path-mask)"
         initial={{ opacity: 0 }}
         animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
@@ -65,14 +65,7 @@ const SketchyStrikethrough: React.FC<{ isVisible: boolean; textWidth: number }> 
           opacity: { duration: 0.3, ease: "easeInOut" }
         }}
       />
-      
-      {/* Gradient definition from your original SVG */}
-      <defs>
-        <linearGradient id="a" x1="1" y1="4.333" x2="62.687" y2="4.333" gradientUnits="userSpaceOnUse">
-          <stop stopColor="currentColor"/>
-          <stop offset="1" stopColor="currentColor" stopOpacity="0.5"/>
-        </linearGradient>
-      </defs>
+
     </svg>
   );
 };
@@ -84,48 +77,12 @@ const Why: React.FC = () => {
     {
       name: "My Skillset",
       skills: [
-        { id: "01", title: "UI DESIGN" },
+        { id: "01", title: "UI / UX DESIGN" },
         { id: "02", title: "FRONTEND DEVELOPMENT" },
-        { id: "03", title: "UX DESIGN" },
-        { id: "04", title: "NO-CODE DEVELOPMENT" }
+        { id: "03", title: "BACKEND & DATABASES" },
+        { id: "04", title: "GAMES & 2D ART" }
       ]
     },
-    // {
-    //   name: "Game Dev",
-    //   skills: [
-    //     { id: "01", title: "UNITY 3D" },
-    //     { id: "02", title: "C# SCRIPTING" },
-    //     { id: "03", title: "GAME ENGINE" },
-    //     { id: "04", title: "LEVEL DESIGN" }
-    //   ]
-    // },
-    // {
-    //   name: "3D Art",
-    //   skills: [
-    //     { id: "01", title: "BLENDER" },
-    //     { id: "02", title: "3D MODELING" },
-    //     { id: "03", title: "TEXTURING" },
-    //     { id: "04", title: "ANIMATION" }
-    //   ]
-    // },
-    // {
-    //   name: "2D Art",
-    //   skills: [
-    //     { id: "01", title: "PHOTOSHOP" },
-    //     { id: "02", title: "ILLUSTRATOR" },
-    //     { id: "03", title: "CONCEPT ART" },
-    //     { id: "04", title: "DIGITAL PAINTING" }
-    //   ]
-    // },
-    // {
-    //   name: "Game Design",
-    //   skills: [
-    //     { id: "01", title: "MECHANICS" },
-    //     { id: "02", title: "NARRATIVE" },
-    //     { id: "03", title: "BALANCING" },
-    //     { id: "04", title: "USER EXPERIENCE" }
-    //   ]
-    // }
   ];
 
   const [activeSkillSet, setActiveSkillSet] = useState<number>(0);

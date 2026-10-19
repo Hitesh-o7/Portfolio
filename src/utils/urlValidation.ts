@@ -4,13 +4,14 @@
  * @returns true if the URL is safe, false otherwise
  */
 export const isValidUrl = (url: string): boolean => {
-  if (!url || url === '/error') return false;
+  if (!url) return false;
   
   // Allow relative URLs
   if (url.startsWith('/')) return true;
   
   try {
-    const parsed = new URL(url, window.location.origin);
+    // No window-based base URL: this also runs during server rendering, and must give the same answer there
+    const parsed = new URL(url);
     // Only allow http and https protocols
     return ['http:', 'https:'].includes(parsed.protocol);
   } catch {

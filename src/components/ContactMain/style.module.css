@@ -20,22 +20,10 @@
     margin-bottom: 90px;
 }
 
-.main .left .hh .profile {
-    display: none;
-}
-
 .main .left .form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-.main .left .form .buttonContainer {
-    display: flex;
-    justify-content: right;
-    margin-top: 50px;
-    position: relative;
-    z-index: 1;
 }
 
 .main .left .formItem {
@@ -85,26 +73,6 @@
 
 .main .left .formItem input:focus {
     outline: none;
-}
-
-.main .button {
-    width: 180px;
-    height: 60px;
-    background-color: rgba(0, 0, 0, 0.3);
-    color: black;
-    border-radius: 5px;
-    margin-right: 100px;
-    display: flex;
-    cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 100px;
-    z-index: 1;
-}
-
-.main .button p {
-    font-size: 2.4dvh;
-    z-index: 99;
 }
 
 .main .right {
@@ -225,11 +193,6 @@
     .main .left .form .formItem input {
         margin-left: 35px;
         font-size: 1.6dvh;
-    }
-    .main .left .form .button {
-        height: 6dvh;
-        width: 10dvh;
-        margin-right: 120px;
     }
     .main .right {
         display: none;

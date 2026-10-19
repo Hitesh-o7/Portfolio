@@ -55,7 +55,7 @@ export default function ErrorPage() {
               href="/contact"
               className="px-8 py-3 border border-white text-white rounded-md hover:bg-white hover:text-black transition-colors duration-300 font-medium"
             >
-              Contact Us
+              Contact Me
             </TransitionLink>
           </div>
         </div>

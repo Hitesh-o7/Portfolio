@@ -79,8 +79,7 @@
     justify-content: center; 
   }
 }
- 
-  
+
 .header h1 {
   width: 100%; 
   text-transform: uppercase;
@@ -95,19 +94,12 @@
   padding: 10px;
 }
  
-.charAnimOut h1 {
-  position: relative;
-  will-change: transform;
-}
-
 .header h1,
-.header p,
-.charAnimOut {
+.header p {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
-.header span,
-.coordinates span {
+.header span {
   position: relative;
   display: block;
   transform: translateY(100%);
@@ -129,3 +121,15 @@
   }
 }
  
+
+/* Intro already played this session, or the visitor prefers reduced motion (see app/layout.tsx):
+   show the finished hero straight away instead of the ~7s clip-path reveal */
+:global(html[data-intro-skip]) .hero {
+  clip-path: none;
+}
+:global(html[data-intro-skip]) .progressBar {
+  display: none;
+}
+:global(html[data-intro-skip]) .header span {
+  transform: none;
+}

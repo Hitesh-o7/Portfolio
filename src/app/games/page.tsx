@@ -5,7 +5,6 @@ import Header from "@/components/Header/Header";
 import { SmoothCursor } from "@/components/ui/Cursor/smooth-cursor";
 import GamesShowcase from "@/components/GamesShowcase/GamesShowcase";
 import { useAnimationContext } from "@/context/AnimationContext";
-import Contact from "@/components/Contact/Contact";
 
 
 export default function GamesPage() {

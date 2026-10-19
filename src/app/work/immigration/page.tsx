@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAnimationContext } from "@/context/AnimationContext";
 
-export default function ImigrationProjectPage() {
+export default function ImmigrationProjectPage() {
   const { currentBg, currentTextColor, setCurrentBg, setCurrentTextColor } = useAnimationContext();
   const [isMobile, setIsMobile] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -53,21 +53,24 @@ export default function ImigrationProjectPage() {
         <div className="flex flex-col gap-4 h-full">
           <div className="flex flex-col gap-4 h-full justify-center items-center mb-10 relative max-md:mt-10">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl text-black font-bold mb-[-1rem] sm:mb-[-1.5rem] md:mb-[-2rem] lg:mb-[-2.5rem] max-md:mt-8 relative z-0">Immigration</h1>
-            <div className="w-full bg-gray-100 rounded-lg overflow-hidden relative z-10">
+            <p className="mt-6 text-center max-w-2xl text-gray-700 text-sm sm:text-base md:text-lg">
+              A website for a Canadian immigration consultancy, guiding individuals and families towards a new life with clear services and easy consultation booking.
+            </p>
+            <div className="w-full bg-gray-100 rounded-lg overflow-hidden relative z-10 mt-6">
               {!imageLoaded && (
                 <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
                   <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
                 </div>
               )}
+              {/* Hero image paints over the skeleton as soon as it decodes; gating it on onLoad (opacity-0) made LCP wait for hydration */}
               <Image 
                 src="/Work/Imi_Main.avif" 
-                alt="Immigration Project" 
-                width={1920}
-                height={1080}
-                className={`w-full h-auto object-contain rounded-xl transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                alt="Canadian immigration consultancy website design" 
+                width={2560}
+                height={6468}
+                className="relative w-full h-auto object-contain rounded-xl"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 80vw"
                 priority={true}
-                quality={75}
                 onLoad={() => setImageLoaded(true)}
                 onError={() => {
                   if (process.env.NODE_ENV === 'development') {

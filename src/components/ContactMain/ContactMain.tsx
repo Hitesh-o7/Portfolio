@@ -73,10 +73,10 @@ export default function ContactMain() {
                 </div>
                 <form className={styles.form} onSubmit={handleSubmit}>
                     {[
-                        { id: '01', label: "What's your name?", name: 'name', placeholder: 'Hitesh Thakur ..' },
-                        { id: '02', label: "What's your email?", name: 'email', placeholder: '#$#$#@gmail.com' },
-                        { id: '03', label: "What's the name of your organization?", name: 'org', placeholder: 'Apple.inc' },
-                        { id: '04', label: 'What services are you looking for?', name: 'services', placeholder: 'Web Design, Web Dev' },
+                        { id: '01', label: "What's your name?", name: 'name', placeholder: 'Your name' },
+                        { id: '02', label: "What's your email?", name: 'email', placeholder: 'you@example.com' },
+                        { id: '03', label: "What's the name of your organization?", name: 'org', placeholder: 'Your company' },
+                        { id: '04', label: 'What services are you looking for?', name: 'services', placeholder: 'Web app, UI/UX design, full-stack build' },
                         { id: '05', label: 'Your message', name: 'message', placeholder: 'Hello Hitesh, can you help me with...*' },
                     ].map(({ id, label, name, placeholder }) => (
                         <div key={name} className={styles.formItem}>
@@ -87,7 +87,8 @@ export default function ContactMain() {
                                 </label>
                             </div>
                             <input
-                                type="text"
+                                id={name}
+                                type={name === 'email' ? 'email' : 'text'}
                                 name={name}
                                 placeholder={placeholder}
                                 value={inputValues[name as keyof FormValues]}
@@ -107,15 +108,15 @@ export default function ContactMain() {
             </div>
             <div className={styles.right}>
                 <div className={styles.profileContainer}>
-                    <Image src="/MainPic.avif" alt="Profile" className={styles.profileImage} width={300} height={300} />
+                    <Image src="/MainPic.avif" alt="Hitesh Thakur" className={styles.profileImage} width={300} height={300} />
                     <div className={styles.arrow}>&#8600;</div>
                 </div>
                 <div className={styles.contactDetails}>
                     <Magnetic>
-                        <h2>Contact  Details</h2>
+                        <h2>Contact Details</h2>
                     </Magnetic>
-                    <p>hitesh.design7@gmail.com</p>
-                    <p>+91 78761 80311</p>
+                    <p><a href="mailto:hitesh.design7@gmail.com">hitesh.design7@gmail.com</a></p>
+                    <p><a href="tel:+917876180311">+91 78761 80311</a></p>
                 </div>
                 <div className={styles.socialLinks}>
                     <Magnetic>
@@ -138,7 +139,7 @@ export default function ContactMain() {
             <div className={styles.bottom}>
                 <div className={styles.round}>
                     <Rounded>
-                        <p>@hitesh.design7@gmail.com</p>
+                        <p>hitesh.design7@gmail.com</p>
                     </Rounded>
                     <Rounded>
                         <p>+91 7876180311</p>
@@ -149,7 +150,7 @@ export default function ContactMain() {
                 <div className={styles.title}>
                     <h1>Social</h1>
                     <div className={styles.links}>
-                        <a href="https://github.com/HiteshO7" target="_blank" rel="noopener noreferrer">
+                        <a href="https://github.com/Hitesh-o7" target="_blank" rel="noopener noreferrer">
                             GitHub
                         </a>
                         <a href="https://www.instagram.com/_hitesh.thakur/" target="_blank" rel="noopener noreferrer">

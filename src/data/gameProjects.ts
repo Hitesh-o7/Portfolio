@@ -16,7 +16,7 @@ export const gameProjects: GameProject[] = [
   {
     id: "crimson-oath",
     name: "Crimson Oath",
-    coverImage: "/Games/MainPage.png",
+    coverImage: "/Games/MainPage.avif",
     description:
       "A dark, atmospheric action-adventure where swift combat and haunting exploration shape your fate in a cursed realm.",
     technologies: ["Unity", "Blender", "Photoshop"],
@@ -25,7 +25,6 @@ export const gameProjects: GameProject[] = [
     featured: true,
     platforms: ["HTML5"],
     playUrl: "https://crazzy-o7.itch.io/crimson-oath",
-    repoUrl: "#",
   }, 
 ];
 

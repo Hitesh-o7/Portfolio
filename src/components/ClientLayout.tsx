@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Lenis from "@studio-freight/lenis";
+import Lenis from "lenis";
 import { AnimationProvider } from "@/context/AnimationContext";
 import TransitionOverlay from "@/components/Transition/TransitionOverlay";
 import { Analytics } from "@vercel/analytics/next";
@@ -14,16 +14,11 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   useEffect(() => {
+    // autoRaf drives the animation loop internally and stops it on destroy()
     const lenis = new Lenis({
       lerp: 0.1,
+      autoRaf: true,
     });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
 
     return () => {
       lenis.destroy();

@@ -68,10 +68,10 @@ export default function Home() {
               const textColor = section.getAttribute("data-textcolor") || "rgba(0,0,0,0.9)";
               
               // Only update if values actually changed to prevent unnecessary re-renders
-              if (currentBg !== bgColor) {
+              if (currentBgRef.current !== bgColor) {
                 setCurrentBg(bgColor);
               }
-              if (currentTextColor !== textColor) {
+              if (currentTextColorRef.current !== textColor) {
                 setCurrentTextColor(textColor);
               }
             }

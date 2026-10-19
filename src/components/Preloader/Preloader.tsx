@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
 import CustomEase from "gsap/CustomEase";
 import styles from "./Preloader.module.css";
-import Lanyard from "../Card/Lanyard";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
+import { INTRO_SEEN_KEY, INTRO_SKIP_ATTR } from "@/constants";
+
+// three.js + Rapier (WASM) are ~2.4MB raw; load them after hydration, while the intro animation plays,
+// instead of blocking first paint. Also keeps them out of the "/" prefetch done by every header logo link.
+const Lanyard = dynamic(() => import("../Card/Lanyard"), { ssr: false });
 
 // Register CustomEase
 if (typeof window !== "undefined") {
@@ -16,91 +21,74 @@ const Preloader = () => {
   const counterRef = useRef<HTMLSpanElement>(null); 
 
   useEffect(() => {
-    const customEase = CustomEase.create("custom", ".87,0,.13,1");
+    const root = document.documentElement;
+    // Already played this session (set by the inline script in app/layout.tsx on reload, or by onComplete
+    // below during client-side navigation), or the visitor prefers reduced motion: CSS shows the finished hero
+    if (root.hasAttribute(INTRO_SKIP_ATTR)) return;
 
-    gsap.set(`.${styles.videoContainer}`, {
-      scale: 0,
-      rotation: -20,
+    // gsap.context collects every tween below so they are killed if the user navigates away mid-intro
+    const ctx = gsap.context(() => {
+      const customEase = CustomEase.create("custom", ".87,0,.13,1");
+
+      gsap.to(`.${styles.hero}`, {
+        clipPath: "polygon(0% 45%, 25% 45%, 25% 55%, 0% 55%)",
+        duration: 1.5,
+        ease: customEase,
+        delay: 1,
+      });
+
+      gsap.to(`.${styles.hero}`, { 
+        clipPath: "polygon(0% 45%, 100% 45%, 100% 55%, 0% 55%)",
+        duration: 2,
+        ease: customEase,
+        delay: 3,
+        onStart: () => {
+          gsap.to(`.${styles.progressBar}`, {
+            width: "100vw",
+            duration: 2,
+            ease: customEase,
+          });
+
+          gsap.to(counterRef.current, {
+            innerHTML: 100,
+            duration: 2,
+            ease: customEase,
+            snap: { innerHTML: 1 },
+          });
+        },
+      });
+
+      gsap.to(`.${styles.hero}`, {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        duration: 1,
+        ease: customEase,
+        delay: 5,
+      });
+
+      gsap.to(`.${styles.progressBar}`, {
+        opacity: 0,
+        duration: 0.3,
+        delay: 5.5,
+      });
+
+      gsap.to(`.${styles.header} span`, {
+        y: "0%",
+        duration: 1,
+        stagger: 0.125,
+        ease: "power3.out",
+        delay: 5.75,
+        onComplete: () => {
+          try {
+            sessionStorage.setItem(INTRO_SEEN_KEY, "1");
+          } catch {
+            // storage blocked (private mode): the intro simply plays again next time
+          }
+          root.setAttribute(INTRO_SKIP_ATTR, "");
+        },
+      });
     });
 
-    gsap.to(`.${styles.hero}`, {
-      clipPath: "polygon(0% 45%, 25% 45%, 25% 55%, 0% 55%)",
-      duration: 1.5,
-      ease: customEase,
-      delay: 1,
-    });
-
-    gsap.to(`.${styles.hero}`, { 
-      clipPath: "polygon(0% 45%, 100% 45%, 100% 55%, 0% 55%)",
-      duration: 2,
-      ease: customEase,
-      delay: 3,
-      onStart: () => {
-        gsap.to(`.${styles.progressBar}`, {
-          width: "100vw",
-          duration: 2,
-          ease: customEase,
-        });
-
-        gsap.to(counterRef.current, {
-          innerHTML: 100,
-          duration: 2,
-          ease: customEase,
-          snap: { innerHTML: 1 },
-        });
-      },
-    });
-
-    gsap.to(`.${styles.hero}`, {
-      clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-      duration: 1,
-      ease: customEase,
-      delay: 5,
-      onStart: () => {
-        gsap.to(`.${styles.videoContainer}`, {
-          scale: 1,
-          rotation: 0,
-          clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-          duration: 1.25,
-          ease: customEase,
-        });
-      },
-    });
-
-    gsap.to(`.${styles.progressBar}`, {
-      opacity: 0,
-      duration: 0.3,
-      delay: 5.5,
-    });
-
-    gsap.to(`.${styles.logo}`, {
-      left: "0%",
-      transform: "translateX(0%)",
-      duration: 1.25,
-      ease: customEase,
-      onStart: () => {
-        gsap.to(`.${styles.charAnimOut} h1`, {
-          y: "100%",
-          duration: 1,
-          stagger: -0.075,
-          ease: customEase,
-        });
-        gsap.to(`.${styles.charAnimIn} h1`, {
-          x: "-1200%",
-          duration: 1,
-          ease: customEase,
-          delay: 0.25,
-        });
-      }, 
-    });
-
-    gsap.to([`.${styles.header} span`, `.${styles.coordinates} span`], {
-      y: "0%",
-      duration: 1,
-      stagger: 0.125,
-      ease: "power3.out",
-      delay: 5.75,
-    });
+    return () => ctx.revert();
   }, []);
 
   return (
