@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useSpring } from "motion/react";
+import { motion, useSpring } from "framer-motion";
 import { FC, JSX, useEffect, useRef, useSyncExternalStore } from "react";
 
 interface Position {

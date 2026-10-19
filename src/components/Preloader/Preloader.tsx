@@ -24,11 +24,6 @@ const Preloader = () => {
     const ctx = gsap.context(() => {
       const customEase = CustomEase.create("custom", ".87,0,.13,1");
 
-      gsap.set(`.${styles.videoContainer}`, {
-        scale: 0,
-        rotation: -20,
-      });
-
       gsap.to(`.${styles.hero}`, {
         clipPath: "polygon(0% 45%, 25% 45%, 25% 55%, 0% 55%)",
         duration: 1.5,
@@ -62,15 +57,6 @@ const Preloader = () => {
         duration: 1,
         ease: customEase,
         delay: 5,
-        onStart: () => {
-          gsap.to(`.${styles.videoContainer}`, {
-            scale: 1,
-            rotation: 0,
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-            duration: 1.25,
-            ease: customEase,
-          });
-        },
       });
 
       gsap.to(`.${styles.progressBar}`, {
@@ -79,28 +65,7 @@ const Preloader = () => {
         delay: 5.5,
       });
 
-      gsap.to(`.${styles.logo}`, {
-        left: "0%",
-        transform: "translateX(0%)",
-        duration: 1.25,
-        ease: customEase,
-        onStart: () => {
-          gsap.to(`.${styles.charAnimOut} h1`, {
-            y: "100%",
-            duration: 1,
-            stagger: -0.075,
-            ease: customEase,
-          });
-          gsap.to(`.${styles.charAnimIn} h1`, {
-            x: "-1200%",
-            duration: 1,
-            ease: customEase,
-            delay: 0.25,
-          });
-        }, 
-      });
-
-      gsap.to([`.${styles.header} span`, `.${styles.coordinates} span`], {
+      gsap.to(`.${styles.header} span`, {
         y: "0%",
         duration: 1,
         stagger: 0.125,

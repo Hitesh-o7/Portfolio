@@ -13,7 +13,6 @@ import TransitionLink from '@/components/Transition/TransitionLink';
 import { useAnimationContext } from '@/context/AnimationContext';
 
 export default function Header() {
-    const header = useRef<HTMLDivElement | null>(null);
     const [isActive, setIsActive] = useState<boolean>(false);
     const button = useRef<HTMLDivElement | null>(null);
     const { currentBg } = useAnimationContext();
@@ -83,10 +82,8 @@ export default function Header() {
                 </Magnetic>
             </div>
 
-            {/* Original header - keeping for spacing but hiding logo */}
-            <div ref={header} className={styles.header}> 
-                {/* Logo moved to fixed position above */}
-            </div>  
+            {/* Spacer: keeps page content below the fixed logo */}
+            <div className={styles.header} />  
 
             <div ref={button} className={styles.headerButtonContainer}>
                 <Rounded onClick={() => setIsActive(!isActive)} className={styles.button}>
