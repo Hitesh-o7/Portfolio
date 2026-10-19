@@ -26,15 +26,17 @@ type ProjectCardBodyProps = {
   isLoaded: boolean
   isCentered: boolean
   onImageSettled: () => void
+  hasLiveLink: boolean
   onOpenLive: () => void
 }
 
-// Shared inside of a project card; the caller decides whether it is wrapped in an external <Link> or a TransitionLink
-function ProjectCardBody({ project, priority, isLoaded, isCentered, onImageSettled, onOpenLive }: ProjectCardBodyProps) {
+// Shared inside of a project card; the caller decides whether it is wrapped in an external <Link>, a TransitionLink,
+// or nothing (no live link). Action buttons only render when there is somewhere to go.
+function ProjectCardBody({ project, priority, isLoaded, isCentered, onImageSettled, hasLiveLink, onOpenLive }: ProjectCardBodyProps) {
   const openGithub = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    if (isValidUrl(project.githubUrl)) {
+    if (project.githubUrl) {
       window.open(project.githubUrl, '_blank', 'noopener,noreferrer')
     }
   }
@@ -93,22 +95,26 @@ function ProjectCardBody({ project, priority, isLoaded, isCentered, onImageSettl
         className="hidden md:flex absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
       >
         <div className="flex gap-3">
-          <div
-            onClick={openLive}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
-            role="button"
-            aria-label={`Open ${project.title}`}
-          >
-            <ExternalLink className="w-5 h-5 text-gray-700" aria-hidden="true" />
-          </div>
-          <div
-            onClick={openGithub}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
-            role="button"
-            aria-label={`${project.title} source code`}
-          >
-            <Github className="w-5 h-5 text-gray-700" aria-hidden="true" />
-          </div>
+          {hasLiveLink && (
+            <div
+              onClick={openLive}
+              className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
+              role="button"
+              aria-label={`Open ${project.title}`}
+            >
+              <ExternalLink className="w-5 h-5 text-gray-700" aria-hidden="true" />
+            </div>
+          )}
+          {project.githubUrl && (
+            <div
+              onClick={openGithub}
+              className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
+              role="button"
+              aria-label={`${project.title} source code`}
+            >
+              <Github className="w-5 h-5 text-gray-700" aria-hidden="true" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -129,23 +135,27 @@ function ProjectCardBody({ project, priority, isLoaded, isCentered, onImageSettl
           </p>
           {/* Action buttons - absolute positioned left bottom */}
           <div className="absolute bottom-4 left-4 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-            <div
-              onClick={openLive}
-              className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
-              role="button"
-              aria-label={`Open ${project.title}`}
-              tabIndex={0}
-            >
-              <ExternalLink className="w-4 h-4 text-white" aria-hidden="true" />
-            </div>
-            <div
-              onClick={openGithub}
-              className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
-              role="button"
-              aria-label={`${project.title} source code`}
-            >
-              <Github className="w-4 h-4 text-white" aria-hidden="true" />
-            </div>
+            {hasLiveLink && (
+              <div
+                onClick={openLive}
+                className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
+                role="button"
+                aria-label={`Open ${project.title}`}
+                tabIndex={0}
+              >
+                <ExternalLink className="w-4 h-4 text-white" aria-hidden="true" />
+              </div>
+            )}
+            {project.githubUrl && (
+              <div
+                onClick={openGithub}
+                className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer"
+                role="button"
+                aria-label={`${project.title} source code`}
+              >
+                <Github className="w-4 h-4 text-white" aria-hidden="true" />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -391,8 +401,10 @@ export default function Work() {
         {filteredProjects.length > 0 ? (
           <div className="space-y-20">
             {filteredProjects.map((project, index) => {
-              const isExternal = isExternalUrl(project.liveUrl || '');
-              const urlIsValid = isValidUrl(project.liveUrl || '');
+              const liveUrl = project.liveUrl ?? '';
+              const isExternal = isExternalUrl(liveUrl);
+              const urlIsValid = isValidUrl(liveUrl);
+              const cardClassName = "flex-1 max-w-2xl relative overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-2xl backdrop-blur-sm border border-gray-100/50 transition-all";
 
               const body = (
                 <ProjectCardBody
@@ -402,11 +414,12 @@ export default function Work() {
                   isLoaded={imagesLoaded.has(project.id)}
                   isCentered={centeredProjectId === project.id}
                   onImageSettled={() => markImageSettled(project.id)}
+                  hasLiveLink={urlIsValid}
                   onOpenLive={() => {
                     if (isExternal && urlIsValid) {
-                      window.open(project.liveUrl, '_blank', 'noopener,noreferrer')
+                      window.open(liveUrl, '_blank', 'noopener,noreferrer')
                     } else if (urlIsValid) {
-                      performTransitionAndNavigate(router, project.liveUrl)
+                      performTransitionAndNavigate(router, liveUrl)
                     }
                   }}
                 />
@@ -415,20 +428,24 @@ export default function Work() {
               return (
               <div key={project.id} className="group flex items-end gap-8 md:gap-8">
                 {/* Project Image Card */}
-                {isExternal ? (
+                {!urlIsValid ? (
+                  <div className={`${cardClassName} duration-500`} data-project-id={project.id}>
+                    {body}
+                  </div>
+                ) : isExternal ? (
                   <Link
-                    href={project.liveUrl}
+                    href={liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 max-w-2xl relative overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-2xl backdrop-blur-sm border border-gray-100/50 transition-all duration-700 cursor-pointer"
+                    className={`${cardClassName} duration-700 cursor-pointer`}
                     data-project-id={project.id}
                   >
                     {body}
                   </Link>
                 ) : (
                   <TransitionLink
-                    href={project.liveUrl}
-                    className="flex-1 max-w-2xl relative overflow-hidden bg-white rounded-xl shadow-lg hover:shadow-2xl backdrop-blur-sm border border-gray-100/50 transition-all duration-500 cursor-pointer block"
+                    href={liveUrl}
+                    className={`${cardClassName} duration-500 cursor-pointer block`}
                     data-project-id={project.id}
                   >
                     {body}

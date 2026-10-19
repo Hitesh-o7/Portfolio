@@ -27,7 +27,7 @@ export default async function GameDetailPage({ params }: PageProps) {
             <Image src="/Games/TopCrimson.avif" alt={`${project.name} key art`} width={2560} height={975} sizes="(max-width: 768px) 100vw, 70vw" priority />
           </div>
           <div className="flex justify-center items-center gap-6 mb-20">
-            {project.playUrl && project.playUrl !== "#" && (
+            {project.playUrl && (
               <StarBorder
                 as="a"
                 href={project.playUrl}

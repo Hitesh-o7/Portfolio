@@ -25,7 +25,6 @@ export const gameProjects: GameProject[] = [
     featured: true,
     platforms: ["HTML5"],
     playUrl: "https://crazzy-o7.itch.io/crimson-oath",
-    repoUrl: "#",
   }, 
 ];
 

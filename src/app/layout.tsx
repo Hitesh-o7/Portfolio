@@ -3,8 +3,17 @@ import { preload } from "react-dom";
 import ClientLayout from "@/components/ClientLayout";
 
 export const metadata = {
-  title: "Hitesh Thakur",
-  description: "Creative Portfolio showcasing 3D art, games, and development work",
+  title: {
+    default: "Hitesh Thakur — Full-Stack Developer & Designer",
+    template: "%s · Hitesh Thakur",
+  },
+  description:
+    "Portfolio of Hitesh Thakur, full-stack developer at Xansr Media who also designs: web apps, UI/UX case studies, games and 2D art.",
+  openGraph: {
+    title: "Hitesh Thakur — Full-Stack Developer & Designer",
+    description: "Web apps, UI/UX case studies, games and 2D art by Hitesh Thakur.",
+    type: "website",
+  },
   icons: {
     icon: "/BottomLogo.svg",
     shortcut: "/BottomLogo.svg",

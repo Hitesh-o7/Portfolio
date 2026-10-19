@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import Image from "next/image";
+import TransitionLink from "@/components/Transition/TransitionLink";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -103,7 +104,7 @@ export default function About() {
             <div className="animate-element">
               <Image 
                 src="/MEME.avif" 
-                alt="Profile" 
+                alt="Hitesh Thakur" 
                 width={280} 
                 height={350}
                 className="w-48 h-60 sm:w-56 sm:h-70 md:w-64 md:h-80 lg:w-72 lg:h-90 xl:w-80 xl:h-96 rounded-lg object-cover"
@@ -129,9 +130,10 @@ export default function About() {
               </div>
               
               <p className="animate-element text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed tracking-wide text-left max-w-xl text-inherit px-0">
-                A UX/UI DESIGNER WITH OVER 1<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>YEARS OF EXPERIENCE IN CREATING DIGITAL<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>PRODUCTS FOR INTERNATIONAL COMPANIES.
+                FULL-STACK DEVELOPER AT XANSR MEDIA,<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>DESIGNING AND BUILDING PRODUCTS END TO<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>END — FROM THE FIRST WIREFRAME TO THE<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>DATABASE BEHIND IT.
               </p>
             </div>
           </div>
@@ -156,11 +158,11 @@ export default function About() {
           <div className="flex flex-col justify-between h-full space-y-8 sm:space-y-12">
             <div className="animate-element">
               <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-2xl leading-relaxed tracking-wide text-inherit text-center lg:text-left lg:ml-[40%]">
-                MY WORK IS PART OF MY LIFESTYLE. AS<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>A UX/UI DESIGNER, I AM CONSTANTLY<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>OBSERVING THE WORLD: I NOTICE HOW<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>PEOPLE INTERACT WITH SPACE,<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>TECHNOLOGY, OBJECTS.
+                I WORK WHERE DESIGN AND CODE MEET.<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>I SKETCH THE INTERFACE, THEN BUILD<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>THE FRONTEND, THE API AND THE DATA<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>UNDERNEATH IT — SO NOTHING GETS LOST<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>IN THE HANDOFF.
               </p>
             </div>
             
@@ -175,14 +177,16 @@ export default function About() {
             
             <div className="animate-element text-center lg:text-left lg:ml-[60%]">
               <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-2xl leading-relaxed tracking-wide text-inherit">
-                I VALUE CLARITY, MEANING, AND<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>FUNCTIONALITY — BOTH IN DESIGN AND IN<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>LIFE. I AM CLOSE TO THE IDEA OF<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>CONSCIOUS MINIMALISM: LEAVING ONLY WHAT<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>MAKES SENSE AND WORKS FOR RESULTS.<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>I LOVE SIMPLE INTERFACES WITH DEEP<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>MEANING — AS WELL AS SIMPLE THINGS THAT<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>BRING TRUE PLEASURE.
+                I VALUE CLARITY, MEANING AND<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>FUNCTIONALITY — IN DESIGN<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>AND IN CODE. I AM CLOSE TO<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>THE IDEA OF CONSCIOUS<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>MINIMALISM: LEAVING ONLY WHAT<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>MAKES SENSE AND WORKS.<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>I LOVE SIMPLE INTERFACES WITH<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>DEEP MEANING — AND CLEAN<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>SYSTEMS THAT ARE A PLEASURE<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>TO BUILD ON.
               </p>
             </div>
           </div>
@@ -220,12 +224,12 @@ export default function About() {
             
             {/* Contact Section */}
             <div className="animate-element flex justify-center lg:justify-start">
-              <div className="flex items-center gap-3">
+              <TransitionLink href="/contact" className="flex items-center gap-3">
                 <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-normal tracking-wide text-inherit border-b border-white/50 pb-1">
-                  LET&rsquo;S CONTACT
+                  LET&rsquo;S TALK
                 </span>
-                <span className="text-lg sm:text-xl md:text-2xl text-inherit">↗</span>
-              </div>
+                <span className="text-lg sm:text-xl md:text-2xl text-inherit" aria-hidden="true">↗</span>
+              </TransitionLink>
             </div>
           </div>
           
@@ -245,10 +249,9 @@ export default function About() {
                 I LOOK FOR AESTHETICS EVERYWHERE:<br className="hidden sm:block" />
                 <span className="sm:hidden"> </span>IN THE FORMS OF NATURE, IN THE<br className="hidden sm:block" />
                 <span className="sm:hidden"> </span>DETAILS OF ARCHITECTURE, IN THE<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>COLORS OF CITY STREETS, AND EVEN<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>IN THE SIMPLE THINGS OF EVERYDAY<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>LIFE. IT&apos;S NOT JUST A HOBBY -<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>IT&apos;S A WAY OF SEEING THE WORLD.
+                <span className="sm:hidden"> </span>COLORS OF CITY STREETS. AND WHEN<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>I&apos;M NOT IN A TERMINAL, I&apos;M OUT<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>CHASING MOUNTAIN PASSES.
               </p>
             </div>
             
@@ -256,11 +259,10 @@ export default function About() {
               <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-2xl leading-relaxed tracking-wide text-inherit">
                 EVERY PROJECT FOR ME IS MORE THAN<br className="hidden sm:block" />
                 <span className="sm:hidden"> </span>A TASK. IT&apos;S A STORY THAT I HELP<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>TELL THROUGH DESIGN.<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>I BELIEVE THAT A GOOD INTERFACE<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>IS NOT JUST ABOUT COLORS AND<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>FONTS, BUT ABOUT THE FEELINGS IT<br className="hidden sm:block" />
-                <span className="sm:hidden"> </span>EVOKES.
+                <span className="sm:hidden"> </span>TELL THROUGH DESIGN AND CODE.<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>A GOOD PRODUCT IS NOT JUST ABOUT<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>COLORS AND FONTS OR CLEAN APIS —<br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>IT&apos;S ABOUT HOW IT FEELS TO USE.
               </p>
             </div>
           </div>

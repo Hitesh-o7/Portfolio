@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
     // Everything in /public is static, so cache optimized variants for 31 days instead of 60 seconds
     minimumCacheTTL: 2678400,
   },
+  // Old case-study URLs (misspelled / renamed) keep working for anyone who saved or shared them
+  async redirects() {
+    return [
+      { source: "/work/Imigration", destination: "/work/immigration", permanent: true },
+      { source: "/work/funky", destination: "/work/funo", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -55,7 +55,10 @@ export default function HeartProjectPage() {
         <div className="flex flex-col gap-4 h-full">
           <div className="flex flex-col gap-4 h-full justify-center items-center mb-10 relative max-md:mt-10">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl text-black font-bold mb-[-1rem] sm:mb-[-1.5rem] md:mb-[-2rem] lg:mb-[-2.5rem] max-md:mt-8 relative z-0">Heartivity</h1>
-            <div className="w-full bg-gray-100 rounded-lg overflow-hidden relative z-10">
+            <p className="mt-6 text-center max-w-2xl text-gray-700 text-sm sm:text-base md:text-lg">
+              A mental well-being site where people can find support, resources and a community that listens.
+            </p>
+            <div className="w-full bg-gray-100 rounded-lg overflow-hidden relative z-10 mt-6">
               {!imageLoaded && !imageError && (
                 <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-0">
                   <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
@@ -64,14 +67,13 @@ export default function HeartProjectPage() {
               {/* Hero image paints over the skeleton as soon as it decodes; gating it on onLoad (opacity-0) made LCP wait for hydration */}
               {!imageError ? (
                 <Image
-                  src="/projects/Testing.avif" 
-                  alt="Heart Project" 
+                  src="/projects/Heartivity.avif" 
+                  alt="Heartivity mental well-being website design" 
                   width={2560}
                   height={9200}
                   className="relative w-full h-auto object-contain rounded-xl"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 80vw"
-                  priority={!isMobile}
-                  loading={isMobile ? "lazy" : "eager"}
+                  priority
                   onLoad={() => setImageLoaded(true)}
                   onError={() => setImageError(true)}
                 />

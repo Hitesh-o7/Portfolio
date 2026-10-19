@@ -69,7 +69,7 @@ export default function PerfumeProjectPage() {
               )}
               {/* Hero image paints over the skeleton as soon as it decodes; gating it on onLoad (opacity-0) made LCP wait for hydration */}
               <Image
-                src="/Work/Perfume%20Store%20Atlanta.avif"
+                src="/Work/PerfumeStore.avif"
                 alt="Perfume Store commerce website"
                 width={1920}
                 height={6854}
