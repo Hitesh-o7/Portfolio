@@ -6,6 +6,7 @@ import gsap from "gsap";
 import CustomEase from "gsap/CustomEase";
 import styles from "./Preloader.module.css";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
+import { INTRO_SEEN_KEY, INTRO_SKIP_ATTR } from "@/constants";
 
 // three.js + Rapier (WASM) are ~2.4MB raw; load them after hydration, while the intro animation plays,
 // instead of blocking first paint. Also keeps them out of the "/" prefetch done by every header logo link.
@@ -20,6 +21,11 @@ const Preloader = () => {
   const counterRef = useRef<HTMLSpanElement>(null); 
 
   useEffect(() => {
+    const root = document.documentElement;
+    // Already played this session (set by the inline script in app/layout.tsx on reload, or by onComplete
+    // below during client-side navigation), or the visitor prefers reduced motion: CSS shows the finished hero
+    if (root.hasAttribute(INTRO_SKIP_ATTR)) return;
+
     // gsap.context collects every tween below so they are killed if the user navigates away mid-intro
     const ctx = gsap.context(() => {
       const customEase = CustomEase.create("custom", ".87,0,.13,1");
@@ -71,6 +77,14 @@ const Preloader = () => {
         stagger: 0.125,
         ease: "power3.out",
         delay: 5.75,
+        onComplete: () => {
+          try {
+            sessionStorage.setItem(INTRO_SEEN_KEY, "1");
+          } catch {
+            // storage blocked (private mode): the intro simply plays again next time
+          }
+          root.setAttribute(INTRO_SKIP_ATTR, "");
+        },
       });
     });
 

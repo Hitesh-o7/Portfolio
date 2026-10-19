@@ -34,65 +34,16 @@ export default function About() {
           }
         );
       });
-
-      // Top image scroll-scrubbed reveal (top -> bottom)
-      const cover = aboutRef.current?.querySelector<HTMLElement>('.reveal-scrub .reveal-cover');
-      if (cover) {
-        gsap.set(cover, { yPercent: 0 });
-        gsap.to(cover, {
-          yPercent: 101,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: cover.parentElement as Element,
-            start: 'top 80%',
-            end: 'top 20%',
-            scrub: true,
-            toggleActions: 'play none none reverse',
-          },
-        });
-      }
     }, aboutRef);
 
     return () => ctx.revert();
   }, []);
 
-  // Disable copy, selection, context menu and browser find on this page
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isMeta = e.ctrlKey || e.metaKey;
-      const key = e.key.toLowerCase();
-      if (isMeta && (key === 'f' || key === 'c' || key === 'x')) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-
-    const preventDefault = (e: Event) => {
-      e.preventDefault();
-    };
-
-    document.addEventListener('keydown', handleKeyDown, true);
-    document.addEventListener('copy', preventDefault, true);
-    document.addEventListener('cut', preventDefault, true);
-    document.addEventListener('contextmenu', preventDefault, true);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown, true);
-      document.removeEventListener('copy', preventDefault, true);
-      document.removeEventListener('cut', preventDefault, true);
-      document.removeEventListener('contextmenu', preventDefault, true);
-    };
-  }, []);
-
   return (
-    <main 
-      ref={aboutRef} 
-      className="bg-transparent text-inherit font-['reddit',sans-serif] p-0 m-0 relative select-none"
-      onContextMenu={(e) => e.preventDefault()}
-      onCopy={(e) => e.preventDefault()}
-      onCut={(e) => e.preventDefault()}
-      onDragStart={(e) => e.preventDefault()}
-    > 
+    <main
+      ref={aboutRef}
+      className="bg-transparent text-inherit font-['reddit',sans-serif] p-0 m-0 relative"
+    >
       {/* First Section - Profile */}
       <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 mt-[5%] py-8 sm:py-12 md:py-16 lg:py-20">
         <h1 className="animate-element text-sm sm:text-base md:text-lg lg:text-xl font-NeueBold tracking-[0.2em] mb-8 sm:mb-12 md:mb-16 text-center md:text-left text-inherit">

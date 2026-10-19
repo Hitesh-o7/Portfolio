@@ -121,3 +121,15 @@
   }
 }
  
+
+/* Intro already played this session, or the visitor prefers reduced motion (see app/layout.tsx):
+   show the finished hero straight away instead of the ~7s clip-path reveal */
+:global(html[data-intro-skip]) .hero {
+  clip-path: none;
+}
+:global(html[data-intro-skip]) .progressBar {
+  display: none;
+}
+:global(html[data-intro-skip]) .header span {
+  transform: none;
+}
