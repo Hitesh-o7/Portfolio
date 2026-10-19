@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useSpring } from "motion/react";
-import { FC, JSX, useEffect, useRef, useState } from "react";
+import { FC, JSX, useEffect, useRef, useSyncExternalStore } from "react";
 
 interface Position {
   x: number;
@@ -80,6 +80,14 @@ const DefaultCursorSVG: FC = () => {
   );
 };
 
+const FINE_POINTER = "(pointer: fine)";
+const subscribeToPointer = (onChange: () => void) => {
+  const mql = window.matchMedia(FINE_POINTER);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+};
+const getFinePointer = () => window.matchMedia(FINE_POINTER).matches;
+
 export function SmoothCursor({
   cursor = <DefaultCursorSVG />,
   springConfig = {
@@ -89,11 +97,11 @@ export function SmoothCursor({
     restDelta: 0.001,
   },
 }: SmoothCursorProps) {
-  const [isMouseDevice, setIsMouseDevice] = useState(true);
+  const isMouseDevice = useSyncExternalStore(subscribeToPointer, getFinePointer, () => true);
 
   const lastMousePos = useRef<Position>({ x: 0, y: 0 });
   const velocity = useRef<Position>({ x: 0, y: 0 });
-  const lastUpdateTime = useRef(Date.now());
+  const lastUpdateTime = useRef(0);
   const previousAngle = useRef(0);
   const accumulatedRotation = useRef(0);
 
@@ -109,11 +117,6 @@ export function SmoothCursor({
     stiffness: 500,
     damping: 35,
   });
-
-  useEffect(() => {
-    const isMouse = window.matchMedia("(pointer: fine)").matches;
-    setIsMouseDevice(isMouse);
-  }, []);
 
   useEffect(() => {
     if (!isMouseDevice) return;

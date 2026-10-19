@@ -1,8 +1,7 @@
 'use client';
 import React from 'react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import styles from './style.module.css';
-import { usePathname } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import Nav from './nav/Nav';
 import gsap from 'gsap'; 
@@ -16,7 +15,6 @@ import { useAnimationContext } from '@/context/AnimationContext';
 export default function Header() {
     const header = useRef<HTMLDivElement | null>(null);
     const [isActive, setIsActive] = useState<boolean>(false);
-    const pathname = usePathname();
     const button = useRef<HTMLDivElement | null>(null);
     const { currentBg } = useAnimationContext();
 
@@ -38,13 +36,11 @@ export default function Header() {
 
     const isBackgroundDark = isDarkBackground(currentBg || '');
 
-    useEffect(() => {
-        setIsActive(false);
-    }, [pathname]);
-
     useLayoutEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
-        if (button.current) {
+        if (!button.current) return;
+        // Header mounts on every page; without reverting, each navigation left another ScrollTrigger behind
+        const ctx = gsap.context(() => {
             gsap.to(button.current, {
                 scrollTrigger: {
                     trigger: document.documentElement,
@@ -59,7 +55,8 @@ export default function Header() {
                     }
                 }
             });
-        }
+        });
+        return () => ctx.revert();
     }, []);
 
     return (

@@ -11,7 +11,7 @@ interface RoundedProps extends React.HTMLAttributes<HTMLDivElement> {
 export default function Rounded({ children, backgroundColor = "#969696", ...attributes }: RoundedProps){
   const circle = useRef<HTMLDivElement | null>(null);
   const timeline = useRef<gsap.core.Timeline | null>(null);
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  const timeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!circle.current) return;
@@ -24,14 +24,14 @@ export default function Rounded({ children, backgroundColor = "#969696", ...attr
   }, []);
 
   const manageMouseEnter = () => {
-    if (timeoutId) clearTimeout(timeoutId);
+    if (timeoutId.current) clearTimeout(timeoutId.current);
     if (timeline.current) {
       timeline.current.tweenFromTo('enter', 'exit');
     }
   };
 
   const manageMouseLeave = () => {
-    timeoutId = setTimeout(() => {
+    timeoutId.current = setTimeout(() => {
       if (timeline.current) {
         timeline.current.play();
       }

@@ -9,7 +9,6 @@ interface TypingAnimationProps extends MotionProps {
   className?: string;
   duration?: number;
   delay?: number;
-  as?: React.ElementType;
   startOnView?: boolean;
   isParagraph?: boolean;
 }
@@ -19,18 +18,17 @@ export function TypingAnimation({
   className,
   duration = 150,
   delay = 0,
-  as: Component = "div",
   startOnView = false,
   isParagraph = false,
   ...props
 }: TypingAnimationProps) {
-  const MotionComponent = motion.create(isParagraph ? "span" : Component, {
-    forwardMotionProps: true,
-  });
+  // Static motion components: the original called motion.create() during render, which gave React a new
+  // component type on every typed letter, so the element was unmounted and remounted each tick
+  const MotionComponent = isParagraph ? motion.span : motion.div;
 
   const [displayedText, setDisplayedText] = useState<string>("");
   const [started, setStarted] = useState(false);
-  const elementRef = useRef<HTMLElement | null>(null);
+  const elementRef = useRef<HTMLDivElement & HTMLSpanElement>(null);
 
   useEffect(() => {
     if (!startOnView) {
@@ -62,10 +60,11 @@ export function TypingAnimation({
   useEffect(() => {
     if (!started) return;
 
-    // Add initial delay of 2 seconds
+    let typingEffect: ReturnType<typeof setInterval> | undefined;
+    // Wait for the preloader's opening clip-path animation before typing
     const initialDelay = setTimeout(() => {
       let i = 0;
-      const typingEffect = setInterval(() => {
+      typingEffect = setInterval(() => {
         if (i < children.length) {
           setDisplayedText(children.substring(0, i + 1));
           i++;
@@ -73,14 +72,11 @@ export function TypingAnimation({
           clearInterval(typingEffect);
         }
       }, duration);
-
-      return () => {
-        clearInterval(typingEffect);
-      };
-    }, 1550); // 1.8 seconds delay
+    }, 1550);
 
     return () => {
       clearTimeout(initialDelay);
+      clearInterval(typingEffect);
     };
   }, [children, duration, started]);
 
